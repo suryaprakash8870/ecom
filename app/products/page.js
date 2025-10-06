@@ -1,4 +1,7 @@
 'use client';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+import { Suspense } from 'react';
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -98,6 +101,7 @@ export default function Products() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
+      <Suspense fallback={<div className="container py-12"><LoadingSpinner text="Loading products..." /></div>}>
       <div className="container py-8">
         {/* Page Header */}
         <div className="mb-8">
@@ -246,6 +250,7 @@ export default function Products() {
           </div>
         </div>
       </div>
+      </Suspense>
       
       <Footer />
     </div>
