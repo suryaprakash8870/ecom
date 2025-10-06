@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const runtime = 'nodejs';
 import { query } from '../../../lib/database';
-import { authenticateToken } from '../../../lib/auth';
+import { requireAuth } from '../../../lib/auth';
 
 export async function GET(request) {
   try {
-    const authResult = await authenticateToken(request);
-    if (authResult) return authResult;
+    const { user, response } = requireAuth(request);
+    if (response) return response;
 
-    const userId = request.user.id;
+    const userId = user.id;
 
     const result = await query(
       'SELECT id, name, email, phone, address, city, state, pincode, role, created_at FROM users WHERE id = $1',
@@ -36,11 +39,11 @@ export async function GET(request) {
 
 export async function PUT(request) {
   try {
-    const authResult = await authenticateToken(request);
-    if (authResult) return authResult;
+    const { user, response } = requireAuth(request);
+    if (response) return response;
 
     const { name, phone, address, city, state, pincode } = await request.json();
-    const userId = request.user.id;
+    const userId = user.id;
 
     // Update user profile
     const result = await query(
